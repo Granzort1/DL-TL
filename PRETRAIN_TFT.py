@@ -694,13 +694,44 @@ def kalman_filter_interpolation(df):
     return df_copy, interpolation_flags
 
     
-## Change path
+## Data paths - 26개 모니터링 사이트 (소스 도메인용 - 결측 과다 사이트 제외)
 river_data_info = {
-   'NAK': {
-       'locations': {
-           'SITE': '/PATH/TO/YOUR/CSV/FILE/SJB_nak_total.csv', 
-       }
-   },
+    'NAK': {  # 낙동강 - 8개 사이트 (4개 제외: CGB, CHB, MGMR, CS)
+        'locations': {
+            'SJB': 'C:/DL-TL/TFT_DATA/NAK/SJB_nak_total.csv',
+            'NDB': 'C:/DL-TL/TFT_DATA/NAK/NDB_nak_total.csv',
+            'GMB': 'C:/DL-TL/TFT_DATA/NAK/GMB_nak_total.csv',
+            'DSB': 'C:/DL-TL/TFT_DATA/NAK/DSB_nak_total.csv',
+            'HCB': 'C:/DL-TL/TFT_DATA/NAK/HCB_nak_total.csv',
+            'HP': 'C:/DL-TL/TFT_DATA/NAK/HP_nak_total.csv',
+            'GJGR': 'C:/DL-TL/TFT_DATA/NAK/GJGR_nak_total.csv',
+            'GJGRB': 'C:/DL-TL/TFT_DATA/NAK/GJGRB_nak_total.csv',
+        }
+    },
+    'HAN': {  # 한강 - 7개 사이트 (2개 제외: YPB, YJB)
+        'locations': {
+            'GJG': 'C:/DL-TL/TFT_DATA/HAN/GJG_han_total.csv',
+            'YC': 'C:/DL-TL/TFT_DATA/HAN/YC_han_total.csv',
+            'GCB': 'C:/DL-TL/TFT_DATA/HAN/GCB_han_total.csv',
+            'GDDG': 'C:/DL-TL/TFT_DATA/HAN/GDDG_han_total.csv',
+            'HGDG': 'C:/DL-TL/TFT_DATA/HAN/HGDG_han_total.csv',
+            'MSDG': 'C:/DL-TL/TFT_DATA/HAN/MSDG_han_total.csv',
+            'JSCG': 'C:/DL-TL/TFT_DATA/HAN/JSCG_han_total.csv',
+        }
+    },
+    'GUM': {  # 금강 - 3개 사이트
+        'locations': {
+            'GJB': 'C:/DL-TL/TFT_DATA/GUM/GJB_gum_total.csv',
+            'BJB': 'C:/DL-TL/TFT_DATA/GUM/BJB_gum_total.csv',
+            'SaJB': 'C:/DL-TL/TFT_DATA/GUM/SaJB_gum_total.csv',
+        }
+    },
+    'YOUNG': {  # 영산강 - 2개 사이트
+        'locations': {
+            'JSB': 'C:/DL-TL/TFT_DATA/YOUNG/JSB_young_total.csv',
+            'SCB': 'C:/DL-TL/TFT_DATA/YOUNG/SCB_young_total.csv',
+        }
+    }
 }
 
 # Global parameters
@@ -891,15 +922,15 @@ print(f"Train dataset size: {len(train_dataset)}")
 print(f"Validation dataset size: {len(valid_dataset)}")
 print(f"Test dataset size: {len(test_dataset)}")   
 
-# Select hyperparmater
-Dropout_list = []
-lr_list = []
-Num_LSTM_Layers_list = []
-Hidden_Layer_Size_list = []
-Embedding_Dim_list = []
-Num_Attention_list = []
+# Select hyperparmater (논문 Table S1 참조)
+Dropout_list = [0.1, 0.2, 0.3]
+lr_list = [0.001, 0.0005, 0.0001]
+Num_LSTM_Layers_list = [1, 2]
+Hidden_Layer_Size_list = [32, 64, 128]
+Embedding_Dim_list = [16, 32]
+Num_Attention_list = [1, 2, 4]
 EPOCHS = 200
-pickle_dir = f'/PATH/TO/YOUR/PRETRAIN/PICKLE/FILE'
+pickle_dir = 'C:/DL-TL/outputs/pretrain'
 os.makedirs(pickle_dir, exist_ok=True)
 
 for Dropout in Dropout_list:

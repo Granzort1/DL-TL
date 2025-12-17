@@ -1,0 +1,14 @@
+{
+    "python.defaultInterpreterPath": "C:\\Users\\skadl\\poetry\\dl-tl\\.venv\\Scripts\\python.exe",
+    "python.terminal.activateEnvironment": true,
+    "python.analysis.extraPaths": [
+        "C:\\DL-TL"
+    ],
+    "terminal.integrated.env.windows": {
+        "VIRTUAL_ENV": "C:\\Users\\skadl\\poetry\\dl-tl\\.venv",
+        "PATH": "C:\\Users\\skadl\\poetry\\dl-tl\\.venv\\Scripts;${env:PATH}"
+    },
+    "cursorpyright.analysis.extraPaths": [
+        "C:\\DL-TL"
+    ]
+}

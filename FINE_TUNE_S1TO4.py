@@ -738,13 +738,50 @@ def create_sequences(data, target, seq_len, out_seq, target_values, flags=None):
     
     return xxs_array, yys_array, flags_array
 
-## Change path
+## Data paths - 26개 모니터링 사이트 (Fine-tuning 대상)
 river_data_info = {
-   'NAK': {
-       'locations': {
-           'SITE': '/PATH/TO/YOUR/CSV/FILE/SJB_nak_total.csv', 
-       }
-   },
+    'NAK': {  # 낙동강 - 12개 사이트
+        'locations': {
+            'SJB': 'C:/DL-TL/TFT_DATA/NAK/SJB_nak_total.csv',
+            'NDB': 'C:/DL-TL/TFT_DATA/NAK/NDB_nak_total.csv',
+            'GMB': 'C:/DL-TL/TFT_DATA/NAK/GMB_nak_total.csv',
+            'DSB': 'C:/DL-TL/TFT_DATA/NAK/DSB_nak_total.csv',
+            'HCB': 'C:/DL-TL/TFT_DATA/NAK/HCB_nak_total.csv',
+            'HP': 'C:/DL-TL/TFT_DATA/NAK/HP_nak_total.csv',
+            'GJGR': 'C:/DL-TL/TFT_DATA/NAK/GJGR_nak_total.csv',
+            'GJGRB': 'C:/DL-TL/TFT_DATA/NAK/GJGRB_nak_total.csv',
+            'CS': 'C:/DL-TL/TFT_DATA/NAK/CS_nak_total.csv',
+            'MGMR': 'C:/DL-TL/TFT_DATA/NAK/MGMR_nak_total.csv',
+            'CHB': 'C:/DL-TL/TFT_DATA/NAK/CHB_nak_total.csv',
+            'CGB': 'C:/DL-TL/TFT_DATA/NAK/CGB_nak_total.csv',
+        }
+    },
+    'HAN': {  # 한강 - 9개 사이트
+        'locations': {
+            'YPB': 'C:/DL-TL/TFT_DATA/HAN/YPB_han_total.csv',
+            'YJB': 'C:/DL-TL/TFT_DATA/HAN/YJB_han_total.csv',
+            'GJG': 'C:/DL-TL/TFT_DATA/HAN/GJG_han_total.csv',
+            'YC': 'C:/DL-TL/TFT_DATA/HAN/YC_han_total.csv',
+            'GCB': 'C:/DL-TL/TFT_DATA/HAN/GCB_han_total.csv',
+            'GDDG': 'C:/DL-TL/TFT_DATA/HAN/GDDG_han_total.csv',
+            'HGDG': 'C:/DL-TL/TFT_DATA/HAN/HGDG_han_total.csv',
+            'MSDG': 'C:/DL-TL/TFT_DATA/HAN/MSDG_han_total.csv',
+            'JSCG': 'C:/DL-TL/TFT_DATA/HAN/JSCG_han_total.csv',
+        }
+    },
+    'GUM': {  # 금강 - 3개 사이트
+        'locations': {
+            'GJB': 'C:/DL-TL/TFT_DATA/GUM/GJB_gum_total.csv',
+            'BJB': 'C:/DL-TL/TFT_DATA/GUM/BJB_gum_total.csv',
+            'SaJB': 'C:/DL-TL/TFT_DATA/GUM/SaJB_gum_total.csv',
+        }
+    },
+    'YOUNG': {  # 영산강 - 2개 사이트
+        'locations': {
+            'JSB': 'C:/DL-TL/TFT_DATA/YOUNG/JSB_young_total.csv',
+            'SCB': 'C:/DL-TL/TFT_DATA/YOUNG/SCB_young_total.csv',
+        }
+    }
 }
 
 # Global parameters
@@ -875,16 +912,17 @@ for river_name, river_info in river_data_info.items():
         train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
         valid_dataloader = DataLoader(valid_dataset, batch_size=batch_size, shuffle=False)
 
-        Dropout_list = []
-        lr_list = []
-        Num_LSTM_Layers_list = []
-        Hidden_Layer_Size_list = []
-        Embedding_Dim_list = []
-        Num_Attention_list = []
+        # 하이퍼파라미터 (논문 Table S1 참조)
+        Dropout_list = [0.1, 0.2, 0.3]
+        lr_list = [0.001, 0.0005, 0.0001]
+        Num_LSTM_Layers_list = [1, 2]
+        Hidden_Layer_Size_list = [32, 64, 128]
+        Embedding_Dim_list = [16, 32]
+        Num_Attention_list = [1, 2, 4]
         EPOCHS = 50
-        
-        ## Change path
-        model_dir = f'/PATH/TO/YOUR/PRETRAIN/PICKLE/FILE'
+
+        ## Pretrained model directory
+        model_dir = 'C:/DL-TL/outputs/pretrain'
         # Iterate through all hyperparameter combinations
         for Dropout in Dropout_list:
             for learning_rate in lr_list:
@@ -896,21 +934,21 @@ for river_name, river_info in river_data_info.items():
                                 # Define the pre-trained model path for the specific river and location
                                 best_model_path = f'{model_dir}/dr{Dropout}_lr{learning_rate}_nl{Num_LSTM_Layers}_hid{Hidden_Layer_Size}_emb{Embedding_Dim}_atten{Num_Attention_Heads}_final_lr*.pt'       
                                                          
-                                # Set directory for saving pickles ## Change path
-                                scheme_a_save_dir = f'/PATH/TO/YOUR/SCHA/PICKLE/FILE/{river_name}/{location_name}'
-                                scheme_b_save_dir = f'/PATH/TO/YOUR/SCHB/PICKLE/FILE/{river_name}/{location_name}'
-                                scheme_c_save_dir = f'/PATH/TO/YOUR/SCHC/PICKLE/FILE/{river_name}/{location_name}'
-                                scheme_d_save_dir = f'/PATH/TO/YOUR/SCHD/PICKLE/FILE/{river_name}/{location_name}'
+                                # Set directory for saving pickles (S1-S4 schemes)
+                                scheme_a_save_dir = f'C:/DL-TL/outputs/finetune/S1/{river_name}/{location_name}'
+                                scheme_b_save_dir = f'C:/DL-TL/outputs/finetune/S2/{river_name}/{location_name}'
+                                scheme_c_save_dir = f'C:/DL-TL/outputs/finetune/S3/{river_name}/{location_name}'
+                                scheme_d_save_dir = f'C:/DL-TL/outputs/finetune/S4/{river_name}/{location_name}'
                                 os.makedirs(scheme_a_save_dir, exist_ok=True)  # Create directory if it doesn't exist                               
                                 os.makedirs(scheme_b_save_dir, exist_ok=True)                                
                                 os.makedirs(scheme_c_save_dir, exist_ok=True)
                                 os.makedirs(scheme_d_save_dir, exist_ok=True)                                
 
-                                # Set directory for saving pickles ## Change path
-                                scheme_a_save_dir1 = f'/PATH/TO/YOUR/SCHA/WEIGHT_PICKLE/FILE/{river_name}/{location_name}'
-                                scheme_b_save_dir1 = f'/PATH/TO/YOUR/SCHB/WEIGHT_PICKLE/FILE/{river_name}/{location_name}'
-                                scheme_c_save_dir1 = f'/PATH/TO/YOUR/SCHC/WEIGHT_PICKLE/FILE/{river_name}/{location_name}'
-                                scheme_d_save_dir1 = f'/PATH/TO/YOUR/SCHD/WEIGHT_PICKLE/FILE/{river_name}/{location_name}'
+                                # Set directory for saving weight pickles (S1-S4 schemes)
+                                scheme_a_save_dir1 = f'C:/DL-TL/outputs/finetune/S1_weights/{river_name}/{location_name}'
+                                scheme_b_save_dir1 = f'C:/DL-TL/outputs/finetune/S2_weights/{river_name}/{location_name}'
+                                scheme_c_save_dir1 = f'C:/DL-TL/outputs/finetune/S3_weights/{river_name}/{location_name}'
+                                scheme_d_save_dir1 = f'C:/DL-TL/outputs/finetune/S4_weights/{river_name}/{location_name}'
                                 os.makedirs(scheme_a_save_dir1, exist_ok=True)  # Create directory if it doesn't exist                               
                                 os.makedirs(scheme_b_save_dir1, exist_ok=True)                                
                                 os.makedirs(scheme_c_save_dir1, exist_ok=True)

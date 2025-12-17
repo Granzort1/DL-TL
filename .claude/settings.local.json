@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(poetry --version:*)",
+      "Bash(cat:*)",
+      "Bash(poetry env use:*)",
+      "Bash(poetry install:*)",
+      "Bash(poetry add:*)",
+      "Bash(poetry run python:*)",
+      "Bash(poetry run pip:*)",
+      "Bash(poetry show:*)",
+      "Bash(poetry env info:*)",
+      "Bash(timeout 60 poetry run python:*)",
+      "Bash(timeout 120 poetry run python:*)"
+    ]
+  }
+}
